@@ -1,0 +1,35 @@
+name: Rewards
+version: ${project.version}
+main: me.sneklingame.rewards.Rewards
+load: STARTUP
+prefix: Rewards
+depend: [Vault]
+authors: [Sneklingame]
+description: A simple reward plugin with a GUI, Vault and MySQL support
+commands:
+  reward:
+    description: Opens the reward GUI
+    aliases: [rewards, rw]
+    usage: /reward [player]
+  reward help:
+    description: Shows help
+  reward reset:
+    description: Resets all cooldowns
+  reward reload:
+    description: Reloads configuration
+permissions:
+  rw.reset:
+    description: Allows players to use /rw reset
+    default: op
+  rw.open:
+    description: Allows players to open the GUI
+    default: op
+  rw.open.others:
+    description: Allows players to open the GUI for other players
+    default: op
+  rw.help:
+    description: Allows players to use /rw help
+    default: op
+  rw.reload:
+    description: Allows players to reload the plugin
+    default: op

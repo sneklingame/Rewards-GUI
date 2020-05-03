@@ -1,0 +1,106 @@
+#Data storage method
+#Only supports MySQL for now
+storage-method: mysql
+
+#MySQL setup
+host: localhost
+port: 3306
+database: rewards
+table: players
+username: root
+password: ''
+
+#Message display when the player claims the reward
+click-message: '&aYou received &l%money% &acoins!'
+#Message display when the cooldown is still active
+cooldown-message: '&cYou can claim this reward in &e%days%d %hours%h %minutes%m %seconds%s&f.'
+
+#GUI inventory settings
+title: '&6&lRewards'
+rows: 4
+#Should the GUI stay opened after clicking on an item?
+keep-open: true
+
+#Item configuration
+#You can have as many items as you want, as long as they each have a unique ID and they're in different slots
+Items:
+  #ID of the item
+  #These can be whatever you want, but make sure they're all different
+  daily:
+    name: '&a&lDaily Reward'
+    #You can find the list of 1.8 IDs here: https://helpch.at/docs/1.8/org/bukkit/Material.html
+    #Note that if you are using a different version than 1.8, these will be different
+    type: STORAGE_MINECART
+    #starts with 0 in the top left corner of the inventory
+    slot: 12
+    lore:
+      - ''
+      - '&e&l[i]&f Click to get &a&l100 &eCoins'
+    give-money: 100
+    #in seconds
+    cooldown: 86400
+    #permission required to claim the reward
+    #can be whatever you want, doesn't even have to contain the 'rw'
+    permission: rw.daily
+    #message displayed if the player doesn't have the permission above
+    no-permission-message: "&cYou don't have permission to claim this reward."
+
+  weekly:
+    name: '&6&lWeekly Reward'
+    type: STORAGE_MINECART
+    slot: 13
+    lore:
+      - ''
+      - '&e&l[i]&f Click to get &a&l500 &eCoins'
+    give-money: 500
+    cooldown: 604800
+    permission: rw.weekly
+    no-permission-message: "&cYou don't have permission to claim this reward."
+
+  monthly:
+    name: '&c&lMonthly Reward'
+    type: STORAGE_MINECART
+    slot: 14
+    lore:
+      - ''
+      - '&e&l[i]&f Click to get &a&l2000 &eCoins'
+    give-money: 2000
+    cooldown: 2592000
+    permission: rw.monthly
+    no-permission-message: "&cYou don't have permission to claim this reward."
+
+  daily_vip:
+    name: '&a&lDaily Reward &c&lVIP'
+    type: POWERED_MINECART
+    slot: 21
+    lore:
+      - ''
+      - '&e&l[i]&f Click to get &a&l200 &eCoins'
+    give-money: 200
+    cooldown: 86400
+    permission: rw.daily.vip
+    no-permission-message: "&cYou must have rank &5&lVIP &cto claim this reward."
+
+  weekly_vip:
+    name: '&6&lWeekly Reward &c&lVIP'
+    type: POWERED_MINECART
+    slot: 22
+    lore:
+      - ''
+      - '&e&l[i]&f Click to get &a&l1000 &eCoins'
+    give-money: 1000
+    cooldown: 604800
+    permission: rw.weekly.vip
+    no-permission-message: "&cYou must have rank &5&lVIP &cto claim this reward."
+
+  monthly_vip:
+    name: '&c&lMonthly Reward &c&lVIP'
+    type: POWERED_MINECART
+    slot: 23
+    lore:
+      - ''
+      - '&e&l[i]&f Click to get &a&l4000 &eCoins'
+    give-money: 4000
+    cooldown: 2592000
+    permission: rw.monthly.vip
+    no-permission-message: "&cYou must have rank &5&lVIP &cto claim this reward."

@@ -1,0 +1,6 @@
+click-message: '&aYou received &l%money% &acoins!'
+cooldown-message: '&cYou can claim this reward in &e%days%d %hours%h %minutes%m %seconds%s&f.'
+reload: '&aConfiguration reloaded!'
+reset: '&eAll data have been reset!'
+player_not_online: '&cPlayer %player% is currently not online'
+no-permission: '&cYou don''t have permission to use this command'
