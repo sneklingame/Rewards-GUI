@@ -45,9 +45,7 @@ public class GUI {
             String material = "MINECART";
 
             //set the Material according to if the cooldown is active or not
-            if (time < MySQL.getTime(player, items[i]) + cooldown) {
-
-            } else {
+            if (time >= MySQL.getTime(player, items[i]) + cooldown) {
                 material = Config.get().getString("Items." + items[i] + ".type");
             }
 
