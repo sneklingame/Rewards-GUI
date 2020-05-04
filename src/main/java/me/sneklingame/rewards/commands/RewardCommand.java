@@ -2,7 +2,7 @@ package me.sneklingame.rewards.commands;
 
 import me.sneklingame.rewards.GUI;
 import me.sneklingame.rewards.files.Config;
-import me.sneklingame.rewards.files.Messages;
+import me.sneklingame.rewards.files.Data;
 import me.sneklingame.rewards.mysql.MySQL;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -23,9 +23,10 @@ public class RewardCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        final String no_permission = ChatColor.translateAlternateColorCodes('&', Messages.get().getString("no-permission"));
+        final String no_permission = ChatColor.RED + "You don't have permission to execute this command";
         final String only_players = "This command can only be executed by a player";
 
+        //for players
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
@@ -64,7 +65,12 @@ public class RewardCommand implements CommandExecutor {
                     //rw reset
                     case "reset": {
                         if (player.hasPermission("rw.reset")) {
-                            MySQL.deleteRows(Config.get().getString("table"));
+                            if (Config.useMySQL()) {
+                                MySQL.deleteRows(Config.get().getString("table"));
+                            } else {
+                                Data.empty();
+                                Data.reload();
+                            }
                             player.sendMessage(ChatColor.YELLOW + "All data has been reset!");
                         } else {
                             player.sendMessage(no_permission);
@@ -75,7 +81,7 @@ public class RewardCommand implements CommandExecutor {
                     case "reload": {
                         if (player.hasPermission("rw.reload")) {
                             Config.reload();
-                            Messages.reload();
+                            Data.reload();
                             player.sendMessage(ChatColor.GREEN + "Configuration reloaded.");
                             break;
                         }
@@ -111,6 +117,7 @@ public class RewardCommand implements CommandExecutor {
             } else {
                 player.sendMessage(ChatColor.RED + "Usage: " + command.getUsage());
             }
+            //for console
         } else {
             if (args.length == 1) {
 
@@ -118,30 +125,35 @@ public class RewardCommand implements CommandExecutor {
 
                     //rw help
                     case "help": {
-                            System.out.println(" ");
-                            System.out.println(plugin.getDescription().getName() + " v " + plugin.getDescription().getVersion());
-                            System.out.println(" ");
-                            System.out.println("Usage:");
-                            System.out.println(" ");
-                            System.out.println("/rw" + " - opens the GUI");
-                            System.out.println("/rw <player>" + " - opens the GUI for another player");
-                            System.out.println("/rw help" + " - shows this page");
-                            System.out.println("/rw reset" + " - resets all cooldowns");
-                            System.out.println("/rw reload" + " - reloads configuration");
+                        System.out.println(" ");
+                        System.out.println(plugin.getDescription().getName() + " v " + plugin.getDescription().getVersion());
+                        System.out.println(" ");
+                        System.out.println("Usage:");
+                        System.out.println(" ");
+                        System.out.println("/rw" + " - opens the GUI");
+                        System.out.println("/rw <player>" + " - opens the GUI for another player");
+                        System.out.println("/rw help" + " - shows this page");
+                        System.out.println("/rw reset" + " - resets all cooldowns");
+                        System.out.println("/rw reload" + " - reloads configuration");
                         break;
                     }
                     //rw reset
                     case "reset": {
+                        if (Config.useMySQL()) {
                             MySQL.deleteRows(Config.get().getString("table"));
-                            System.out.println("All data has been reset!");
+                        } else {
+                            Data.empty();
+                            Data.reload();
+                        }
+                        System.out.println("All data has been reset!");
                         break;
                     }
                     //rw reload
                     case "reload": {
-                            Config.reload();
-                            Messages.reload();
-                            System.out.println("Configuration reloaded.");
-                            break;
+                        Config.reload();
+                        Data.reload();
+                        System.out.println("Configuration reloaded.");
+                        break;
                     }
                     //anything else
                     default: {
@@ -151,14 +163,13 @@ public class RewardCommand implements CommandExecutor {
                 }
 
 
-
             } else {
                 System.out.println("This command was either not found or cannot be executed by the console");
             }
         }
 
         return true;
-        }
-
     }
+
+}
 

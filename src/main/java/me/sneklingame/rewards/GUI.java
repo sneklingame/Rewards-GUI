@@ -2,6 +2,7 @@ package me.sneklingame.rewards;
 
 
 import me.sneklingame.rewards.files.Config;
+import me.sneklingame.rewards.files.Data;
 import me.sneklingame.rewards.mysql.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,20 +36,25 @@ public class GUI {
         ArrayList<String> item_lore;
         ItemStack item;
         int i = 0;
-        int j = 0;
+        int j;
 
         //this happens for every item in config.yml
         while (i < items.length) {
 
             long cooldown = Config.get().getLong("Items." + items[i] + ".cooldown");
             long time = System.currentTimeMillis() / 1000;
-            String material = "MINECART";
+            String material = Config.get().getString("Items." + items[i] + ".active-cooldown-type");
 
             //set the Material according to if the cooldown is active or not
-            if (time >= MySQL.getTime(player, items[i]) + cooldown) {
-                material = Config.get().getString("Items." + items[i] + ".type");
+            if (Config.useMySQL()) {
+                if (time >= MySQL.getTime(player, items[i]) + cooldown) {
+                    material = Config.get().getString("Items." + items[i] + ".type");
+                }
+            } else {
+                if (time >= Data.getTime(player, items[i]) + cooldown) {
+                    material = Config.get().getString("Items." + items[i] + ".type");
+                }
             }
-
             j = 0;
             //create the item
             item = new ItemStack(Material.matchMaterial(material), 1);

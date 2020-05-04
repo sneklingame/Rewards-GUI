@@ -4,17 +4,18 @@ import me.sneklingame.rewards.Rewards;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
 
-public class DataFile {
+public class Data {
 
     private static Plugin plugin;
 
-    private DataFile(Rewards plugin) {
-        DataFile.plugin = plugin;
+    private Data(Rewards plugin) {
+        Data.plugin = plugin;
     }
 
     private static File file;
@@ -47,5 +48,35 @@ public class DataFile {
 
     public static void reload() {
         datafile = YamlConfiguration.loadConfiguration(file);
+    }
+
+    public static long getTime(Player player, String item) {
+
+        String playername = player.getName();
+        return get().getLong(playername + "." + item);
+    }
+
+    public static void setTime(Player player, long time, String item) {
+
+        String playername = player.getName();
+        get().set(playername + "." + item, time);
+        save();
+    }
+
+    public static boolean playerExists(Player player) {
+        return get().contains(player.getName());
+    }
+
+    public static void delete() {
+        file.delete();
+    }
+
+    public static void empty() {
+        delete();
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

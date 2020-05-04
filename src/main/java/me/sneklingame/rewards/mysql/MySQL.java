@@ -1,32 +1,31 @@
 package me.sneklingame.rewards.mysql;
 
-import me.sneklingame.rewards.Rewards;
 import me.sneklingame.rewards.files.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.sql.*;
 
 
 public class MySQL {
 
-    public static Plugin plugin;
-
-    public MySQL(Rewards pl) {
-        plugin = pl;
-    }
-
     public static Connection con;
     static ConsoleCommandSender console = Bukkit.getConsoleSender();
 
-    // connect to the database
+    private static final String host = Config.get().getString("host");
+    private static final int port = Config.get().getInt("port");
+    private static final String database = Config.get().getString("database");
+    private static final String username = Config.get().getString("username");
+    private static final String password = Config.get().getString("password");
+    private static final String table = Config.get().getString("table");
+
     public static void connect() {
+
         if (!isConnected()) {
             try {
-                con = DriverManager.getConnection("jdbc:mysql://" + Config.host + ":" + Config.port + "/" + Config.database, Config.username, Config.password);
+                con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
                 Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[Rewards] Connected to MySQL!");
 
             } catch (SQLException e) {
@@ -35,7 +34,6 @@ public class MySQL {
         }
     }
 
-    // disconnect
     public static void disconnect() {
         if (isConnected()) {
             try {
@@ -78,9 +76,9 @@ public class MySQL {
 
     public static boolean playerExists(Player player) {
 
-        String playername = player.getDisplayName();
+        String playername = player.getName();
         try {
-            PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM " + Config.table + " WHERE player=?");
+            PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM " + table + " WHERE player=?");
             statement.setString(1, playername);
             ResultSet results = statement.executeQuery();
             if (results.next()) {
@@ -95,15 +93,15 @@ public class MySQL {
 
     public static void createPlayer(Player player, long time, String column) {
 
-        String playername = player.getDisplayName();
+        String playername = player.getName();
 
         try {
-            PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM " + Config.table + " WHERE player=?");
+            PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM " + table + " WHERE player=?");
             statement.setString(1, playername);
             ResultSet results = statement.executeQuery();
             results.next();
             if (!playerExists(player)) {
-                PreparedStatement insert = getConnection().prepareStatement("INSERT INTO " + Config.table + " (player, " + column + ") VALUES (?, ?)");
+                PreparedStatement insert = getConnection().prepareStatement("INSERT INTO " + table + " (player, " + column + ") VALUES (?, ?)");
                 insert.setString(1, playername);
                 insert.setLong(2, time);
                 insert.executeUpdate();
@@ -116,10 +114,10 @@ public class MySQL {
 
     public static long getTime(Player player, String column) {
 
-        String playername = player.getDisplayName();
+        String playername = player.getName();
 
         try {
-            PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM " + Config.table + " WHERE player=?");
+            PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM " + table + " WHERE player=?");
             statement.setString(1, playername);
             ResultSet results = statement.executeQuery();
             if (results.next()) {
@@ -133,10 +131,10 @@ public class MySQL {
 
     public static void setTime(Player player, long time, String column) {
 
-        String playername = player.getDisplayName();
+        String playername = player.getName();
 
         try {
-            PreparedStatement statement = getConnection().prepareStatement("UPDATE " + Config.table + " SET " + column + "=? WHERE player=?");
+            PreparedStatement statement = getConnection().prepareStatement("UPDATE " + table + " SET " + column + "=? WHERE player=?");
             statement.setLong(1, time);
             statement.setString(2, playername);
             statement.executeUpdate();

@@ -33,3 +33,6 @@ permissions:
   rw.reload:
     description: Allows players to reload the plugin
     default: op
+  rw.update:
+    description: Shows notifications about updates to players with this permission
+    default: op

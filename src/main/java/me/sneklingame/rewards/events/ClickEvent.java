@@ -3,8 +3,10 @@ package me.sneklingame.rewards.events;
 import me.sneklingame.rewards.GUI;
 import me.sneklingame.rewards.Rewards;
 import me.sneklingame.rewards.files.Config;
+import me.sneklingame.rewards.files.Data;
 import me.sneklingame.rewards.mysql.MySQL;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,11 +14,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class ClickEvent implements Listener {
 
+    //get instance of main class and register the event
     public Plugin plugin;
 
     public ClickEvent(Rewards pl) {
@@ -30,19 +34,23 @@ public class ClickEvent implements Listener {
         Player player = (Player) event.getWhoClicked();
         Economy economy = Rewards.getEconomy();
 
+        //is the player clicking a valid item?
         if (event.getCurrentItem() != null) {
+            //checking the inventory title, if it's a player and if the item count != 0
             if ((event.getClickedInventory().getTitle().equals(ChatColor.translateAlternateColorCodes('&', Config.get().getString("title")))) && (event.getWhoClicked() instanceof Player) && (event.getCurrentItem().getAmount() != 0)) {
 
                 int i = 0;
                 long money = 0;
                 String message;
                 String cooldown_message;
+                //get all Items in in config.yml
                 Set<String> items_set = Config.get().getConfigurationSection("Items").getKeys(false);
                 String[] items = items_set.toArray(new String[items_set.size()]);
 
                 event.setCancelled(true);
 
 
+                //this happens for each item
                 while (i < items.length) {
                     if (ChatColor.translateAlternateColorCodes('&', Config.get().getString("Items." + items[i] + ".name")).equals(ChatColor.translateAlternateColorCodes('&', event.getCurrentItem().getItemMeta().getDisplayName()))) {
 
@@ -55,18 +63,24 @@ public class ClickEvent implements Listener {
                             long time_left;
                             long cooldown = Config.get().getLong("Items." + items[i] + ".cooldown");
 
-                            if (!MySQL.playerExists(player)) {
-                                giveMoney(player, money, message, economy);
-                                MySQL.createPlayer(player, time, items[i]);
-                            } else {
-                                if (time < MySQL.getTime(player, items[i]) + cooldown) {
 
+                            if (Config.useMySQL()) {
+                                if (!MySQL.playerExists(player)) {
+
+                                    //MySQL; Player doesn't exist
+                                    MySQL.createPlayer(player, time, items[i]);
+                                    executeItemActions(player, money, message, economy, items[i]);
+
+                                } else if (time < MySQL.getTime(player, items[i]) + cooldown) {
+
+                                    //MySQL; Player exists and the cooldown is active
                                     time_left = (MySQL.getTime(player, items[i]) + cooldown) - time;
                                     int days = (int) TimeUnit.SECONDS.toDays(time_left);
                                     long hours = TimeUnit.SECONDS.toHours(time_left) - (days * 24);
                                     long minutes = TimeUnit.SECONDS.toMinutes(time_left) - (TimeUnit.SECONDS.toHours(time_left) * 60);
                                     long seconds = TimeUnit.SECONDS.toSeconds(time_left) - (TimeUnit.SECONDS.toMinutes(time_left) * 60);
 
+                                    //replace placeholders with actual values
                                     cooldown_message = ChatColor.translateAlternateColorCodes('&', Config.get().getString("cooldown-message"));
                                     cooldown_message = cooldown_message.replace("%days%", String.valueOf(days));
                                     cooldown_message = cooldown_message.replace("%hours%", String.valueOf(hours));
@@ -76,31 +90,81 @@ public class ClickEvent implements Listener {
                                     player.sendMessage(cooldown_message);
 
                                 } else {
-                                    giveMoney(player, money, message, economy);
+                                    //MySQL; Player exists but the cooldown is not active
+                                    executeItemActions(player, money, message, economy, items[i]);
                                     MySQL.setTime(player, time, items[i]);
+
+                                }
+                            } else {
+                                if (!Data.playerExists(player)) {
+
+                                    //YAML; Player doesn't exist
+                                    Data.setTime(player, time, items[i]);
+                                    executeItemActions(player, money, message, economy, items[i]);
+
+                                } else if (time < Data.getTime(player, items[i]) + cooldown) {
+
+                                    //YAML; Player exists and the cooldown is active
+                                    time_left = (Data.getTime(player, items[i]) + cooldown) - time;
+                                    int days = (int) TimeUnit.SECONDS.toDays(time_left);
+                                    long hours = TimeUnit.SECONDS.toHours(time_left) - (days * 24);
+                                    long minutes = TimeUnit.SECONDS.toMinutes(time_left) - (TimeUnit.SECONDS.toHours(time_left) * 60);
+                                    long seconds = TimeUnit.SECONDS.toSeconds(time_left) - (TimeUnit.SECONDS.toMinutes(time_left) * 60);
+
+                                    //replace placeholders with actual values
+                                    cooldown_message = ChatColor.translateAlternateColorCodes('&', Config.get().getString("cooldown-message"));
+                                    cooldown_message = cooldown_message.replace("%days%", String.valueOf(days));
+                                    cooldown_message = cooldown_message.replace("%hours%", String.valueOf(hours));
+                                    cooldown_message = cooldown_message.replace("%minutes%", String.valueOf(minutes));
+                                    cooldown_message = cooldown_message.replace("%seconds%", String.valueOf(seconds));
+
+                                    player.sendMessage(cooldown_message);
+
+                                } else {
+
+                                    //YAML; Player exists but the cooldown is not active
+                                    executeItemActions(player, money, message, economy, items[i]);
+                                    Data.setTime(player, time, items[i]);
                                 }
                             }
+
                         } else {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', Config.get().getString("Items." + items[i] + ".no-permission-message")));
                         }
                     }
+
                     i++;
                 }
+
                 if (!Config.get().getBoolean("keep-open")) {
                     player.closeInventory();
                 } else {
                     player.closeInventory();
                     GUI.openGUI(player);
                 }
-
             }
         }
     }
 
-    public void giveMoney(Player player, long money, String message, Economy economy) {
+
+    public void executeItemActions(Player player, long money, String message, Economy economy, String item) {
 
         player.sendMessage(message);
         economy.depositPlayer(player, money);
+        ArrayList<String> commands = (ArrayList<String>) Config.get().getStringList("Items." + item + ".commands");
+        int i = 0;
+        while (i < commands.size()) {
+
+            String command = commands.get(i);
+
+            if (command.contains("console: ")) {
+                command = command.replace("console: ", "");
+                Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+            } else {
+                player.performCommand(commands.get(i));
+            }
+            i++;
+        }
 
     }
 

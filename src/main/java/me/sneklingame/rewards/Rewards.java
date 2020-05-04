@@ -3,8 +3,7 @@ package me.sneklingame.rewards;
 import me.sneklingame.rewards.commands.RewardCommand;
 import me.sneklingame.rewards.events.ClickEvent;
 import me.sneklingame.rewards.files.Config;
-import me.sneklingame.rewards.files.DataFile;
-import me.sneklingame.rewards.files.Messages;
+import me.sneklingame.rewards.files.Data;
 import me.sneklingame.rewards.mysql.MySQL;
 import metrics.Metrics;
 import net.milkbowl.vault.economy.Economy;
@@ -20,29 +19,29 @@ public final class Rewards extends JavaPlugin {
 
     private static final Logger log = Logger.getLogger("Minecraft");
     private static Economy econ = null;
-    public final String prefix = "[" + getDescription().getPrefix() + "] ";
+    public static String prefix = "";
 
 
     @Override
     public void onEnable() {
 
+
+        prefix = "[" + getDescription().getPrefix() + "] ";
         GUI gui = new GUI(this);
         ClickEvent clickEvent = new ClickEvent(this);
-        MySQL mySQL = new MySQL(this);
         Metrics metrics = new Metrics(this, 7382);
-        Config config = new Config(this);
+        UpdateChecker updateChecker = new UpdateChecker(this);
 
         //load config.yml
         saveResource("config.yml", false);
         Config.setup();
         Config.get().options().copyDefaults(true);
 
-        //load messages.yml
-        saveResource("messages.yml", false);
-        Messages.setup();
-        Messages.get().options().copyDefaults(true);
-
         showStartingMessage();
+
+        //check for updates
+        updateChecker.check();
+        getServer().getPluginManager().registerEvents(updateChecker, this);
 
         //setup MySQL or YAML
         setupDataStorageMethod(getDataStorageMethod());
@@ -82,15 +81,18 @@ public final class Rewards extends JavaPlugin {
 
     public void setupMySQL() {
 
+        //connect to the database
         if (getDataStorageMethod().equalsIgnoreCase("mysql")) {
             MySQL.connect();
             if (!MySQL.isConnected()) {
                 getServer().getLogger().log(Level.SEVERE, prefix + " FAILED TO CONNECT TO MYSQL! DISABLING PLUGIN.");
                 getServer().getPluginManager().disablePlugin(this);
             } else {
+                //create the table
                 String table = getConfig().getString("table");
                 MySQL.createTable(table);
 
+                //create the columns
                 Set<String> items_set = getConfig().getConfigurationSection("Items").getKeys(false);
                 String[] items = items_set.toArray(new String[items_set.size()]);
                 int i = 0;
@@ -127,9 +129,9 @@ public final class Rewards extends JavaPlugin {
 
             //YAML setup
         } else if (method.equalsIgnoreCase("yaml")) {
-            DataFile.setup();
-            DataFile.get().options().copyDefaults(true);
-            DataFile.save();
+            Data.setup();
+            Data.get().options().copyDefaults(true);
+            Data.save();
             //invalid data storage method in config.yml
         } else {
             getServer().getLogger().log(Level.SEVERE, prefix + "INVALID DATA STORAGE TYPE in config.yml! Disabling plugin.");
@@ -150,5 +152,10 @@ public final class Rewards extends JavaPlugin {
         } else {
             return "undefined";
         }
+    }
+
+
+    public static String getPrefix() {
+        return prefix;
     }
 }

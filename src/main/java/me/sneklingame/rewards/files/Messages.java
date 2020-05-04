@@ -49,9 +49,4 @@ public class Messages {
         datafile = YamlConfiguration.loadConfiguration(file);
     }
 
-   /* public void setDefaults() {
-        HashMap<String, String> defaults = new HashMap<String, String>();
-        defaults.put("", "Abcd");
-        get().setDefaults(defaults);
-    }*/
 }
