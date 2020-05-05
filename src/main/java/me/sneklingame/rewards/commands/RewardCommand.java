@@ -56,7 +56,7 @@ public class RewardCommand implements CommandExecutor {
                             player.sendMessage(ChatColor.YELLOW + "/rw <player>" + ChatColor.WHITE + " - opens the GUI for another player");
                             player.sendMessage(ChatColor.YELLOW + "/rw help" + ChatColor.WHITE + " - shows this page");
                             player.sendMessage(ChatColor.YELLOW + "/rw reset" + ChatColor.WHITE + " - resets all cooldowns");
-                            System.out.println("/rw reload" + " - reloads configuration");
+                            player.sendMessage(ChatColor.YELLOW + "/rw reload" + " - reloads configuration");
                         } else {
                             player.sendMessage(no_permission);
                         }
