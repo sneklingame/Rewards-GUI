@@ -7,7 +7,6 @@
 
 check-for-updates: true
 
-#Data storage method; YAML or MySQL
 storage-method: YAML
 
 host: localhost
@@ -22,12 +21,12 @@ cooldown-message: '&cYou can claim this reward in &e%days%d %hours%h %minutes%m 
 
 title: '&6&lRewards'
 rows: 4
-keep-open: true
+keep-open: false
 
 fill-blank-space:
-  enabled: true
+  enabled: false
   item: STAINED_GLASS_PANE
-  data-value: 5
+  data-value: 7
 
 
 Items:

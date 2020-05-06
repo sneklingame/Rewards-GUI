@@ -46,9 +46,10 @@ public class GUI {
         //this happens for every item in config.yml
         while (i < items.length) {
 
-            while (c < Config.get().getInt("rows") * 9) {
+            if (Config.get().getBoolean("fill-blank-space.enabled")) {
 
-                if (Config.get().getBoolean("fill-blank-space.enabled")) {
+                while (c < Config.get().getInt("rows") * 9) {
+
                     ItemStack fill = new ItemStack(Material.matchMaterial(Config.get().getString("fill-blank-space.item")), 1);
                     ItemMeta fillMeta = fill.getItemMeta();
                     fill.setDurability((short) Config.get().getInt("fill-blank-space.data-value"));
@@ -56,6 +57,7 @@ public class GUI {
                     fill.setItemMeta(fillMeta);
                     gui.setItem(c, fill);
                     c++;
+
                 }
             }
 
