@@ -79,12 +79,12 @@ public class RewardCommand implements CommandExecutor {
                     }
                     //rw reload
                     case "reload": {
-                        if (player.hasPermission("rw.reload")) {
-                            Config.reload();
-                            Data.reload();
-                            player.sendMessage(ChatColor.GREEN + "Configuration reloaded.");
-                            break;
-                        }
+                        reloadConfigs(player);
+                        break;
+                    }
+                    case "rl": {
+                        reloadConfigs(player);
+                        break;
                     }
                     //rw <player>
                     default: {
@@ -169,6 +169,14 @@ public class RewardCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    private void reloadConfigs(Player player) {
+        if (player.hasPermission("rw.reload")) {
+            Config.reload();
+            Data.reload();
+            player.sendMessage(ChatColor.GREEN + "Configuration reloaded.");
+        }
     }
 
 }

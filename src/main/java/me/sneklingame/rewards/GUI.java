@@ -10,14 +10,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.data.type.GlassPane;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class GUI {
 
@@ -39,8 +42,9 @@ public class GUI {
         ArrayList<String> raw_lore;
         ArrayList<String> item_lore;
         ItemStack item;
+        long time_left, hours, minutes, seconds;
+        int days, j;
         int i = 0;
-        int j;
         int c = 0;
 
         //this happens for every item in config.yml
@@ -92,11 +96,16 @@ public class GUI {
 
             //get the lore
             while (j < raw_lore.size()) {
-                item_lore.add(ChatColor.translateAlternateColorCodes('&', raw_lore.get(j)));
+                String lore_line = ChatColor.translateAlternateColorCodes('&', raw_lore.get(j));
+                lore_line = Config.replacePlaceholders(lore_line, player);
+                item_lore.add(lore_line);
                 j++;
             }
             //set the lore and meta
             item_meta.setLore(item_lore);
+
+            item_meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item_meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
             item.setDurability((short) Config.get().getInt("Items." + items[i] + ".data-value"));
             item.setItemMeta(item_meta);
 

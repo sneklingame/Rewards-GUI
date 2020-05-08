@@ -62,7 +62,8 @@ public class ClickEvent implements Listener {
 
                                     money = Config.get().getLong("Items." + items[i] + ".give-money");
                                     message = ChatColor.translateAlternateColorCodes('&', Config.get().getString("click-message"));
-                                    message = message.replace("%money%", String.valueOf(money));
+                                    message = Config.replacePlaceholders(message, "%money%", money);
+                                    message = Config.replacePlaceholders(message, player);
                                     long time = System.currentTimeMillis() / 1000;
                                     long time_left;
                                     long cooldown = Config.get().getLong("Items." + items[i] + ".cooldown");
@@ -86,10 +87,8 @@ public class ClickEvent implements Listener {
 
                                             //replace placeholders with actual values
                                             cooldown_message = ChatColor.translateAlternateColorCodes('&', Config.get().getString("cooldown-message"));
-                                            cooldown_message = cooldown_message.replace("%days%", String.valueOf(days));
-                                            cooldown_message = cooldown_message.replace("%hours%", String.valueOf(hours));
-                                            cooldown_message = cooldown_message.replace("%minutes%", String.valueOf(minutes));
-                                            cooldown_message = cooldown_message.replace("%seconds%", String.valueOf(seconds));
+                                            cooldown_message = Config.replacePlaceholders(cooldown_message, days, hours, minutes, seconds);
+                                            cooldown_message = Config.replacePlaceholders(cooldown_message, player);
 
                                             player.sendMessage(cooldown_message);
                                             playUnavailableSound(player, items[i]);
@@ -118,10 +117,8 @@ public class ClickEvent implements Listener {
 
                                             //replace placeholders with actual values
                                             cooldown_message = ChatColor.translateAlternateColorCodes('&', Config.get().getString("cooldown-message"));
-                                            cooldown_message = cooldown_message.replace("%days%", String.valueOf(days));
-                                            cooldown_message = cooldown_message.replace("%hours%", String.valueOf(hours));
-                                            cooldown_message = cooldown_message.replace("%minutes%", String.valueOf(minutes));
-                                            cooldown_message = cooldown_message.replace("%seconds%", String.valueOf(seconds));
+                                            cooldown_message = Config.replacePlaceholders(cooldown_message, days, hours, minutes, seconds);
+                                            cooldown_message = Config.replacePlaceholders(cooldown_message, player);
 
                                             player.sendMessage(cooldown_message);
                                             playUnavailableSound(player, items[i]);
@@ -136,7 +133,11 @@ public class ClickEvent implements Listener {
 
 
                                 } else {
-                                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Config.get().getString("Items." + items[i] + ".no-permission-message")));
+                                    String no_permission = ChatColor.translateAlternateColorCodes('&', Config.get().getString("Items." + items[i] + ".no-permission-message"));
+                                    Config.replacePlaceholders(no_permission, player);
+                                    Config.replacePlaceholders(no_permission, "%reward%", ChatColor.translateAlternateColorCodes('&',
+                                            Config.get().getString("Items." + items[i] + ".name")));
+                                    player.sendMessage(no_permission);
                                 }
                             }
                         }
