@@ -161,7 +161,10 @@ public class ClickEvent implements Listener {
     private void executeItemActions(Player player, long money, String message, Economy economy, String item) {
 
         player.sendMessage(message);
-        economy.depositPlayer(player, money);
+
+        if (Rewards.getEconomy() != null) {
+            economy.depositPlayer(player, money);
+        }
 
         if (Config.get().getString("Items." + item + ".sound") != null) {
             try {
@@ -183,6 +186,7 @@ public class ClickEvent implements Listener {
 
             if (command.contains("console: ")) {
                 command = command.replace("console: ", "");
+                command = command.replace("%player%", player.getName());
                 Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
 
             } else {

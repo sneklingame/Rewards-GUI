@@ -49,10 +49,9 @@ public final class Rewards extends JavaPlugin {
         //register rewards command
         getCommand("reward").setExecutor(new RewardCommand(this));
 
-        //disable the plugin if no economy plugin is found
+        //no economy plugin is found
         if (!setupEconomy()) {
-            log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
+            log.warning(String.format("[%s] No Vault dependency found! The 'money' function will not work!", getDescription().getName()));
             return;
         }
 

@@ -78,10 +78,7 @@ public class RewardCommand implements CommandExecutor {
                         break;
                     }
                     //rw reload
-                    case "reload": {
-                        reloadConfigs(player);
-                        break;
-                    }
+                    case "reload":
                     case "rl": {
                         reloadConfigs(player);
                         break;
@@ -117,6 +114,7 @@ public class RewardCommand implements CommandExecutor {
             } else {
                 player.sendMessage(ChatColor.RED + "Usage: " + command.getUsage());
             }
+
             //for console
         } else {
             if (args.length == 1) {
@@ -149,7 +147,8 @@ public class RewardCommand implements CommandExecutor {
                         break;
                     }
                     //rw reload
-                    case "reload": {
+                    case "reload":
+                    case "rl": {
                         Config.reload();
                         Data.reload();
                         System.out.println("Configuration reloaded.");
