@@ -156,7 +156,23 @@ public class RewardCommand implements CommandExecutor {
                     }
                     //anything else
                     default: {
-                        System.out.println("Argument " + args[0] + " not recognized.");
+
+                        if (plugin.getServer().getPlayerExact(args[0]) != null) {
+                            //do they have permission?
+
+                            //is target player online?
+                            if (plugin.getServer().getPlayerExact(args[0]).isOnline()) {
+
+                                //open GUI to target player
+                                GUI.openGUI(plugin.getServer().getPlayerExact(args[0]));
+
+                            }
+
+                            //target player is not online or doesn't exist
+                        } else {
+                            System.out.println("Player " + args[0] + " is currently not online.");
+                        }
+
                         break;
                     }
                 }

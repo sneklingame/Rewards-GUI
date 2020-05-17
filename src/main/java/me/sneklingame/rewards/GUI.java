@@ -4,23 +4,17 @@ package me.sneklingame.rewards;
 import me.sneklingame.rewards.files.Config;
 import me.sneklingame.rewards.files.Data;
 import me.sneklingame.rewards.mysql.MySQL;
-import net.minecraft.server.v1_8_R3.BlockStainedGlassPane;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.block.data.type.GlassPane;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class GUI {
 

@@ -53,7 +53,7 @@ public class Config {
     public static boolean useMySQL() {
         return get().getString("storage-method").equalsIgnoreCase("mysql");
     }
-    
+
     public static String replacePlaceholders(String string, Player player) {
 
         string = string.replace("%player%", player.getName());
