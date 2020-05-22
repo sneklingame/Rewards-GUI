@@ -186,12 +186,20 @@ public class RewardCommand implements CommandExecutor {
         return true;
     }
 
-    private void reloadConfigs(Player player) {
+    public void reloadConfigs(Player player) {
+
         if (player.hasPermission("rw.reload")) {
+
             Config.reload();
-            Data.reload();
+
+            if (plugin.getConfig().getString("storage-method").equalsIgnoreCase("yaml")) {
+                Data.reload();
+            }
+
             player.sendMessage(ChatColor.GREEN + "Configuration reloaded.");
+
         }
+
     }
 
 }
