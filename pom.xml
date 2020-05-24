@@ -6,7 +6,7 @@
 
     <groupId>me.sneklingame.rewards</groupId>
     <artifactId>Rewards</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
     <packaging>jar</packaging>
 
     <name>Rewards</name>

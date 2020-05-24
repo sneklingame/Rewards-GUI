@@ -25,7 +25,7 @@ public class MySQL {
 
         if (!isConnected()) {
             try {
-                con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+                con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", username, password);
                 Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[Rewards] Connected to MySQL!");
 
             } catch (SQLException e) {

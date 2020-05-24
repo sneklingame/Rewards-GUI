@@ -52,7 +52,6 @@ public final class Rewards extends JavaPlugin {
         //no economy plugin is found
         if (!setupEconomy()) {
             log.warning(String.format("[%s] No Vault dependency found! The 'money' function will not work!", getDescription().getName()));
-            return;
         }
 
     }
