@@ -6,8 +6,7 @@ labels: bug
 assignees: ''
 
 ---
-
-**NOTE: Support will be provided only for the latest version of the plugin. If you don't have the latest version, please update.**
+### Bug report
 
 **Describe the bug**  
 A clear and concise description of what the bug is.
