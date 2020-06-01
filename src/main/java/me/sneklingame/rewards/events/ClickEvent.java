@@ -1,10 +1,10 @@
 package me.sneklingame.rewards.events;
 
 import me.sneklingame.rewards.GUI;
+import me.sneklingame.rewards.MySQL;
 import me.sneklingame.rewards.Rewards;
 import me.sneklingame.rewards.files.Config;
 import me.sneklingame.rewards.files.Data;
-import me.sneklingame.rewards.mysql.MySQL;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -134,8 +134,8 @@ public class ClickEvent implements Listener {
 
                                 } else {
                                     String no_permission = ChatColor.translateAlternateColorCodes('&', Config.get().getString("Items." + items[i] + ".no-permission-message"));
-                                    Config.replacePlaceholders(no_permission, player);
-                                    Config.replacePlaceholders(no_permission, "%reward%", ChatColor.translateAlternateColorCodes('&',
+                                    no_permission = Config.replacePlaceholders(no_permission, player);
+                                    no_permission = Config.replacePlaceholders(no_permission, "%reward%", ChatColor.translateAlternateColorCodes('&',
                                             Config.get().getString("Items." + items[i] + ".name")));
                                     player.sendMessage(no_permission);
                                 }
@@ -160,10 +160,12 @@ public class ClickEvent implements Listener {
 
     private void executeItemActions(Player player, long money, String message, Economy economy, String item) {
 
-        player.sendMessage(message);
 
         if (Rewards.getEconomy() != null) {
-            economy.depositPlayer(player, money);
+            if (money != 0) {
+                economy.depositPlayer(player, money);
+                player.sendMessage(message);
+            }
         }
 
         if (Config.get().getString("Items." + item + ".sound") != null) {

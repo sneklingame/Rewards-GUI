@@ -49,7 +49,7 @@ public class UpdateChecker implements Listener {
                 TextComponent message = new TextComponent("§aYou can download it here.");
                 message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7Download").create()));
                 message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/rewards-gui-mysql-vault.78262/"));
-                player.sendMessage( ChatColor.translateAlternateColorCodes('&', "&6&lNew version of Rewards GUI available!"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lNew version of Rewards GUI available!"));
                 player.spigot().sendMessage(message);
             }
         }

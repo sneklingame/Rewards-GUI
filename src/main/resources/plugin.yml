@@ -3,7 +3,7 @@ version: ${project.version}
 main: me.sneklingame.rewards.Rewards
 load: STARTUP
 prefix: Rewards
-depend: [Vault]
+softdepend: [Vault, PlaceholderAPI]
 authors: [Sneklingame]
 description: A simple reward plugin with a GUI, Vault and MySQL support
 commands:

@@ -1,12 +1,13 @@
 package me.sneklingame.rewards;
 
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.sneklingame.rewards.files.Config;
 import me.sneklingame.rewards.files.Data;
-import me.sneklingame.rewards.mysql.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class GUI {
 
@@ -28,11 +30,14 @@ public class GUI {
 
     public static void openGUI(Player player) {
 
-        //create new inventory
-        Inventory gui = Bukkit.createInventory(player, Config.get().getInt("rows") * 9, ChatColor.translateAlternateColorCodes('&', Config.get().getString("title")));
+        if (!isConfigComplete(player)) {
+            return;
+        }
 
         Set<String> items_set = Config.get().getConfigurationSection("Items").getKeys(false);
         String[] items = items_set.toArray(new String[items_set.size()]);
+        String title = ChatColor.translateAlternateColorCodes('&', Config.get().getString("title"));
+        int rows = Config.get().getInt("rows");
         ArrayList<String> raw_lore;
         ArrayList<String> item_lore;
         ItemStack item;
@@ -40,6 +45,10 @@ public class GUI {
         int days, j;
         int i = 0;
         int c = 0;
+
+
+        //create new inventory
+        Inventory gui = Bukkit.createInventory(player, rows * 9, title);
 
         //this happens for every item in config.yml
         while (i < items.length) {
@@ -80,7 +89,7 @@ public class GUI {
             //create the meta
             ItemMeta item_meta = item.getItemMeta();
             if (!Config.get().getString("Items." + items[i] + ".name").equals("")) {
-                item_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Config.get().getString("Items." + items[i] + ".name")));
+                item_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(player, Config.get().getString("Items." + items[i] + ".name"))));
             } else {
                 item_meta.setDisplayName(" ");
             }
@@ -92,6 +101,7 @@ public class GUI {
             while (j < raw_lore.size()) {
                 String lore_line = ChatColor.translateAlternateColorCodes('&', raw_lore.get(j));
                 lore_line = Config.replacePlaceholders(lore_line, player);
+                lore_line = PlaceholderAPI.setPlaceholders(player, lore_line);
                 item_lore.add(lore_line);
                 j++;
             }
@@ -100,7 +110,13 @@ public class GUI {
 
             item_meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             item_meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+            item_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setDurability((short) Config.get().getInt("Items." + items[i] + ".data-value"));
+
+            if (Config.get().getBoolean("Items." + items[i] + ".enchanted")) {
+                item_meta.addEnchant(Enchantment.DURABILITY, 1, true);
+            }
+
             item.setItemMeta(item_meta);
 
             //place the item in the inventory
@@ -116,5 +132,25 @@ public class GUI {
         player.openInventory(gui);
 
     }
+
+    private static boolean isConfigComplete(Player player) {
+
+        boolean complete = true;
+
+        if (Config.get().getString("title") == null) {
+            plugin.getLogger().log(Level.SEVERE, "Missing parameter 'title' in config.yml!");
+            player.sendMessage(ChatColor.GOLD + Rewards.getPrefix() + ChatColor.RED + "Missing parameter 'title' in config.yml!");
+            complete = false;
+        }
+
+        if (Config.get().getInt("rows") == 0) {
+            plugin.getLogger().log(Level.SEVERE, "Missing parameter 'rows' in config.yml!");
+            player.sendMessage(ChatColor.GOLD + Rewards.getPrefix() + ChatColor.RED + "Missing parameter 'rows' in config.yml!");
+            complete = false;
+        }
+
+        return complete;
+    }
+
 }
 

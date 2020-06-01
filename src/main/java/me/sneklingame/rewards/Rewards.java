@@ -4,7 +4,6 @@ import me.sneklingame.rewards.commands.RewardCommand;
 import me.sneklingame.rewards.events.ClickEvent;
 import me.sneklingame.rewards.files.Config;
 import me.sneklingame.rewards.files.Data;
-import me.sneklingame.rewards.mysql.MySQL;
 import metrics.Metrics;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -40,8 +39,10 @@ public final class Rewards extends JavaPlugin {
         showStartingMessage();
 
         //check for updates
-        updateChecker.check();
-        getServer().getPluginManager().registerEvents(updateChecker, this);
+        if (Config.get().getBoolean("check-for-updates")) {
+            updateChecker.check();
+            getServer().getPluginManager().registerEvents(updateChecker, this);
+        }
 
         //setup MySQL or YAML
         setupDataStorageMethod(getDataStorageMethod());
@@ -96,7 +97,7 @@ public final class Rewards extends JavaPlugin {
                 int i = 0;
 
                 while (i < items.length) {
-                    MySQL.createColumn(table, items[i], "int");
+                    MySQL.createColumn(table, items[i], "int(4)");
                     i++;
                 }
             }

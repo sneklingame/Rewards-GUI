@@ -1,9 +1,10 @@
 package me.sneklingame.rewards.commands;
 
 import me.sneklingame.rewards.GUI;
+import me.sneklingame.rewards.MySQL;
+import me.sneklingame.rewards.Rewards;
 import me.sneklingame.rewards.files.Config;
 import me.sneklingame.rewards.files.Data;
-import me.sneklingame.rewards.mysql.MySQL;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,11 +21,12 @@ public class RewardCommand implements CommandExecutor {
         plugin = pl;
     }
 
+    final String no_permission = ChatColor.RED + "You don't have permission to execute this command";
+    final String only_players = "This command can only be executed by a player";
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        final String no_permission = ChatColor.RED + "You don't have permission to execute this command";
-        final String only_players = "This command can only be executed by a player";
 
         //for players
         if (sender instanceof Player) {
@@ -33,7 +35,7 @@ public class RewardCommand implements CommandExecutor {
             //if there are no arguments
             if (args.length == 0) {
 
-                if (player.hasPermission("rw.open.others")) {
+                if (player.hasPermission("rw.open")) {
                     GUI.openGUI(player);
                 } else {
                     player.sendMessage(no_permission);
@@ -48,7 +50,7 @@ public class RewardCommand implements CommandExecutor {
                     case "help": {
                         if (player.hasPermission("rw.help")) {
                             player.sendMessage("");
-                            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + plugin.getDescription().getName() + ChatColor.WHITE + " v " + plugin.getDescription().getVersion());
+                            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + plugin.getDescription().getName() + ChatColor.WHITE + " " + plugin.getDescription().getVersion());
                             player.sendMessage("");
                             player.sendMessage(ChatColor.YELLOW + "Usage:");
                             player.sendMessage("");
@@ -56,7 +58,7 @@ public class RewardCommand implements CommandExecutor {
                             player.sendMessage(ChatColor.YELLOW + "/rw <player>" + ChatColor.WHITE + " - opens the GUI for another player");
                             player.sendMessage(ChatColor.YELLOW + "/rw help" + ChatColor.WHITE + " - shows this page");
                             player.sendMessage(ChatColor.YELLOW + "/rw reset" + ChatColor.WHITE + " - resets all cooldowns");
-                            player.sendMessage(ChatColor.YELLOW + "/rw reload" + " - reloads configuration");
+                            player.sendMessage(ChatColor.YELLOW + "/rw reload" + ChatColor.WHITE + " - reloads configuration");
                         } else {
                             player.sendMessage(no_permission);
                         }
@@ -80,7 +82,10 @@ public class RewardCommand implements CommandExecutor {
                     //rw reload
                     case "reload":
                     case "rl": {
-                        reloadConfigs(player);
+                        if (player.hasPermission("rw.reload")) {
+                            reloadConfigs();
+                            player.sendMessage(ChatColor.GREEN + "Configuration reloaded.");
+                        }
                         break;
                     }
                     //rw <player>
@@ -115,6 +120,7 @@ public class RewardCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "Usage: " + command.getUsage());
             }
 
+
             //for console
         } else {
             if (args.length == 1) {
@@ -124,7 +130,7 @@ public class RewardCommand implements CommandExecutor {
                     //rw help
                     case "help": {
                         System.out.println(" ");
-                        System.out.println(plugin.getDescription().getName() + " v " + plugin.getDescription().getVersion());
+                        System.out.println(plugin.getDescription().getName() + " " + plugin.getDescription().getVersion());
                         System.out.println(" ");
                         System.out.println("Usage:");
                         System.out.println(" ");
@@ -149,8 +155,7 @@ public class RewardCommand implements CommandExecutor {
                     //rw reload
                     case "reload":
                     case "rl": {
-                        Config.reload();
-                        Data.reload();
+                        reloadConfigs();
                         System.out.println("Configuration reloaded.");
                         break;
                     }
@@ -186,19 +191,13 @@ public class RewardCommand implements CommandExecutor {
         return true;
     }
 
-    public void reloadConfigs(Player player) {
+    public void reloadConfigs() {
 
-        if (player.hasPermission("rw.reload")) {
-
-            Config.reload();
+        Config.reload();
 
             if (plugin.getConfig().getString("storage-method").equalsIgnoreCase("yaml")) {
                 Data.reload();
             }
-
-            player.sendMessage(ChatColor.GREEN + "Configuration reloaded.");
-
-        }
 
     }
 

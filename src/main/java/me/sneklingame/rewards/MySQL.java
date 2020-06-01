@@ -1,4 +1,4 @@
-package me.sneklingame.rewards.mysql;
+package me.sneklingame.rewards;
 
 import me.sneklingame.rewards.files.Config;
 import org.bukkit.Bukkit;
@@ -57,7 +57,7 @@ public class MySQL {
 
         try {
             Statement statement = getConnection().createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS " + table + " (player varchar(200))");
+            statement.execute("CREATE TABLE IF NOT EXISTS `" + table + "` (player varchar(200));");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -67,7 +67,7 @@ public class MySQL {
 
         try {
             Statement statement = getConnection().createStatement();
-            statement.execute("ALTER TABLE " + table + " ADD COLUMN IF NOT EXISTS " + column + " " + type);
+            statement.execute("ALTER TABLE `" + table + "` ADD COLUMN IF NOT EXISTS `" + column + "` " + type + ";");
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
