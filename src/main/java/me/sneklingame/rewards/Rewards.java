@@ -4,8 +4,12 @@ import me.sneklingame.rewards.commands.RewardCommand;
 import me.sneklingame.rewards.events.ClickEvent;
 import me.sneklingame.rewards.files.Config;
 import me.sneklingame.rewards.files.Data;
+import me.sneklingame.rewards.util.GUI;
+import me.sneklingame.rewards.util.MySQL;
+import me.sneklingame.rewards.util.UpdateChecker;
 import metrics.Metrics;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -54,6 +58,7 @@ public final class Rewards extends JavaPlugin {
         if (!setupEconomy()) {
             log.warning(String.format("[%s] No Vault dependency found! The 'money' function will not work!", getDescription().getName()));
         }
+
 
     }
 
@@ -157,4 +162,8 @@ public final class Rewards extends JavaPlugin {
     public static String getPrefix() {
         return prefix;
     }
+
+    public static boolean PAPIInstalled() {
+        return (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null);
+        }
 }

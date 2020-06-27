@@ -1,10 +1,11 @@
 package me.sneklingame.rewards.events;
 
-import me.sneklingame.rewards.GUI;
-import me.sneklingame.rewards.MySQL;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.sneklingame.rewards.Rewards;
 import me.sneklingame.rewards.files.Config;
 import me.sneklingame.rewards.files.Data;
+import me.sneklingame.rewards.util.GUI;
+import me.sneklingame.rewards.util.MySQL;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,6 +42,8 @@ public class ClickEvent implements Listener {
             //checking the inventory title, if it's a player and if the item count != 0
             if ((event.getView().getTitle().equals(ChatColor.translateAlternateColorCodes('&', Config.get().getString("title")))) && (event.getWhoClicked() instanceof Player) && (event.getCurrentItem().getAmount() != 0)) {
 
+                event.setCancelled(true);
+                if (!(event.getCurrentItem().getType().toString().equalsIgnoreCase(Config.get().getString("fill-blank-space.item")) && event.getCurrentItem().getItemMeta().getDisplayName().equals(" "))) {
                 int i = 0;
                 long money = 0;
                 String message;
@@ -48,8 +51,6 @@ public class ClickEvent implements Listener {
                 //get all Items in in config.yml
                 Set<String> items_set = Config.get().getConfigurationSection("Items").getKeys(false);
                 String[] items = items_set.toArray(new String[items_set.size()]);
-
-                event.setCancelled(true);
 
 
                 //this happens for each item
@@ -147,13 +148,13 @@ public class ClickEvent implements Listener {
                     i++;
                 }
 
-                if (!Config.get().getBoolean("keep-open")) {
-                    player.closeInventory();
-                } else {
-                    player.closeInventory();
+                player.closeInventory();
+
+                if (Config.get().getBoolean("keep-open")) {
                     GUI.openGUI(player);
                 }
             }
+        }
         }
     }
 
@@ -189,10 +190,12 @@ public class ClickEvent implements Listener {
             if (command.contains("console: ")) {
                 command = command.replace("console: ", "");
                 command = command.replace("%player%", player.getName());
+                command = PlaceholderAPI.setPlaceholders(player, command);
                 Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
 
             } else {
-                player.performCommand(commands.get(i));
+                command = PlaceholderAPI.setPlaceholders(player, command);
+                player.performCommand(command);
             }
             i++;
         }

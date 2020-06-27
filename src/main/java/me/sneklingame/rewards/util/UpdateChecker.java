@@ -1,5 +1,6 @@
-package me.sneklingame.rewards;
+package me.sneklingame.rewards.util;
 
+import me.sneklingame.rewards.Rewards;
 import me.sneklingame.rewards.files.Config;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;

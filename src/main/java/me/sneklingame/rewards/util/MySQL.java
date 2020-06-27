@@ -1,4 +1,4 @@
-package me.sneklingame.rewards;
+package me.sneklingame.rewards.util;
 
 import me.sneklingame.rewards.files.Config;
 import org.bukkit.Bukkit;

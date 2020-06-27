@@ -1,10 +1,9 @@
 package me.sneklingame.rewards.commands;
 
-import me.sneklingame.rewards.GUI;
-import me.sneklingame.rewards.MySQL;
-import me.sneklingame.rewards.Rewards;
 import me.sneklingame.rewards.files.Config;
 import me.sneklingame.rewards.files.Data;
+import me.sneklingame.rewards.util.GUI;
+import me.sneklingame.rewards.util.MySQL;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

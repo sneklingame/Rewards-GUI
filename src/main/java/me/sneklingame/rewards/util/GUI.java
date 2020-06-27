@@ -1,7 +1,8 @@
-package me.sneklingame.rewards;
+package me.sneklingame.rewards.util;
 
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.sneklingame.rewards.Rewards;
 import me.sneklingame.rewards.files.Config;
 import me.sneklingame.rewards.files.Data;
 import org.bukkit.Bukkit;
@@ -89,7 +90,12 @@ public class GUI {
             //create the meta
             ItemMeta item_meta = item.getItemMeta();
             if (!Config.get().getString("Items." + items[i] + ".name").equals("")) {
-                item_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(player, Config.get().getString("Items." + items[i] + ".name"))));
+
+                String display_name = Config.get().getString("Items." + items[i] + ".name");
+                if (Rewards.PAPIInstalled()) {
+                    display_name = PlaceholderAPI.setPlaceholders(player, display_name);
+                }
+                item_meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', display_name));
             } else {
                 item_meta.setDisplayName(" ");
             }
@@ -100,23 +106,35 @@ public class GUI {
             //get the lore
             while (j < raw_lore.size()) {
                 String lore_line = ChatColor.translateAlternateColorCodes('&', raw_lore.get(j));
+
+                //replace %player% with player
                 lore_line = Config.replacePlaceholders(lore_line, player);
-                lore_line = PlaceholderAPI.setPlaceholders(player, lore_line);
+
+                //if PlaceholderAPI is installed, replace PAPI placeholders
+                if (Rewards.PAPIInstalled()) {
+                    lore_line = PlaceholderAPI.setPlaceholders(player, lore_line);
+                }
+
                 item_lore.add(lore_line);
                 j++;
             }
+
             //set the lore and meta
             item_meta.setLore(item_lore);
 
             item_meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             item_meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
             item_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+            //set data value
             item.setDurability((short) Config.get().getInt("Items." + items[i] + ".data-value"));
 
+            //if enchanted=true, set as enchanted
             if (Config.get().getBoolean("Items." + items[i] + ".enchanted")) {
                 item_meta.addEnchant(Enchantment.DURABILITY, 1, true);
             }
 
+            //set item meta
             item.setItemMeta(item_meta);
 
             //place the item in the inventory

@@ -44,8 +44,8 @@ Items:
     commands:
       - 'say This command is executed by the player'
       - 'console: say This command is executed by the console'
-    sound: 'LEVEL_UP'
-    unavailable-sound: 'VILLAGER_NO'
+    sound: 'ENTITY_PLAYER_LEVELUP'
+    unavailable-sound: 'ENTITY_VILLAGER_NO'
     cooldown: 86400
     permission: rw.daily
     no-permission-message: "&cYou don't have permission to claim this reward."
@@ -59,8 +59,8 @@ Items:
       - ''
       - '&e&l[i]&f Click to get &a&l500 &eCoins'
     give-money: 500
-    sound: 'LEVEL_UP'
-    unavailable-sound: 'VILLAGER_NO'
+    sound: 'ENTITY_PLAYER_LEVELUP'
+    unavailable-sound: 'ENTITY_VILLAGER_NO'
     cooldown: 604800
     permission: rw.weekly
     no-permission-message: "&cYou don't have permission to claim this reward."
@@ -74,8 +74,8 @@ Items:
       - ''
       - '&e&l[i]&f Click to get &a&l2000 &eCoins'
     give-money: 2000
-    sound: 'LEVEL_UP'
-    unavailable-sound: 'VILLAGER_NO'
+    sound: 'ENTITY_PLAYER_LEVELUP'
+    unavailable-sound: 'ENTITY_VILLAGER_NO'
     cooldown: 2592000
     permission: rw.monthly
     no-permission-message: "&cYou don't have permission to claim this reward."
@@ -89,8 +89,8 @@ Items:
       - ''
       - '&e&l[i]&f Click to get &a&l200 &eCoins'
     give-money: 200
-    sound: 'LEVEL_UP'
-    unavailable-sound: 'VILLAGER_NO'
+    sound: 'ENTITY_PLAYER_LEVELUP'
+    unavailable-sound: 'ENTITY_VILLAGER_NO'
     cooldown: 86400
     permission: rw.daily.vip
     no-permission-message: "&cYou must have rank &5&lVIP &cto claim this reward."
@@ -104,8 +104,8 @@ Items:
       - ''
       - '&e&l[i]&f Click to get &a&l1000 &eCoins'
     give-money: 1000
-    sound: 'LEVEL_UP'
-    unavailable-sound: 'VILLAGER_NO'
+    sound: 'ENTITY_PLAYER_LEVELUP'
+    unavailable-sound: 'ENTITY_VILLAGER_NO'
     cooldown: 604800
     permission: rw.weekly.vip
     no-permission-message: "&cYou must have rank &5&lVIP &cto claim this reward."
@@ -119,8 +119,8 @@ Items:
       - ''
       - '&e&l[i]&f Click to get &a&l4000 &eCoins'
     give-money: 4000
-    sound: 'LEVEL_UP'
-    unavailable-sound: 'VILLAGER_NO'
+    sound: 'ENTITY_PLAYER_LEVELUP'
+    unavailable-sound: 'ENTITY_VILLAGER_NO'
     cooldown: 2592000
     permission: rw.monthly.vip
     no-permission-message: "&cYou must have rank &5&lVIP &cto claim this reward."
