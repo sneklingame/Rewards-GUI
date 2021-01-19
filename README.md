@@ -1,3 +1,5 @@
+# THIS PROJECT IS DEPRECATED AND NO LONGER MAINTAINED
+
 # Rewards-GUI
 > "A simple, highly customizable reward plugin with a GUI and a Vault and MySQL support."
 
